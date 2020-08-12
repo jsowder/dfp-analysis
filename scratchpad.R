@@ -70,4 +70,6 @@ dfp_posts <-
 
 dfp_tidy <-
   dfp_posts %>% 
-  unnest_tokens(word, content)
+  unnest_tokens(word, content) %>% 
+  anti_join(stop_words)
+
