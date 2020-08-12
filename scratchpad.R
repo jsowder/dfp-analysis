@@ -73,3 +73,9 @@ dfp_tidy <-
   unnest_tokens(word, content) %>% 
   anti_join(stop_words)
 
+# Folks, we've got a wordcloud
+dfp_tidy %>%
+  count(word, sort = T) %>% 
+  with(wordcloud::wordcloud(word, n, max.words = 100))
+
+
