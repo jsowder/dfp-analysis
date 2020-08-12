@@ -54,13 +54,14 @@ dfp_posts <-
       ),
     content = 
       raw_src %>% 
-      map(~.x %>% 
+      map_chr(~.x %>% 
             as_xml_document() %>% 
             html_node('[data-layout-label="Post Body"]') %>%
             html_nodes('p') %>%
             tail(-1) %>% 
             html_text() %>% 
-            str_subset("^.{55,}$")
+            str_subset("^.{55,}$") %>% 
+            str_c(collapse = "\n")
       ),
   ) %T>%
   glimpse()
