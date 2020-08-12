@@ -108,11 +108,18 @@ stmnt_authors <-
   dfp_tidy %>%
   inner_join(get_sentiments("afinn")) %>% 
   unnest(authors) %>%
+  unnest(authors) %>% 
+  mutate(authors =
+           authors %>% 
+           str_squish()) %>% 
+  filter(authors != "",
+         authors != "Tufts University",) %>% 
   group_by(authors) %>% 
-  summarise(sentiment = sum(value),
+  summarise(sentiment = mean(value),
             post_count = n_distinct(url)
   ) %>% 
-  filter(post_count > 2) %T>%
-  glimpse()
+  filter(post_count > 10) %>% 
+  arrange(sentiment) %T>%
+  View()
 
 
