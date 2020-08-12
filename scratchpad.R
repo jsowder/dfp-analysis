@@ -53,7 +53,8 @@ dfp_posts <-
             html_node('[data-layout-label="Post Body"]') %>%
             html_node('p') %>% 
             html_nodes('strong') %>% 
-            html_text()
+            html_text() %>% 
+            str_squish()
       ),
     content = 
       raw_src %>% 
