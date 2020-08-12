@@ -105,7 +105,9 @@ stmnt_timeline <-
 
 stmnt_timeline %>% 
   ggplot(aes(`Publication Date`, `Sentiment Score`)) +
-  geom_col(show.legend = FALSE)
+  geom_col(show.legend = FALSE) + 
+  ggtitle("DFP's Blog Sentiment Over Time") + 
+  theme(plot.title = element_text(size=18, face="bold.italic"))
 
 # Sentiment by author
 stmnt_authors <-
