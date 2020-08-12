@@ -54,8 +54,9 @@ dfp_posts <-
             html_node('p') %>% 
             html_nodes('strong') %>% 
             html_text() %>% 
-            str_squish() %>% 
             str_remove_all("[:punct:]") %>% 
+            str_remove_all("$[bB]ys ") %>% 
+            str_squish() %>% 
             str_subset("^.{8,}$")
       ),
     content = 
@@ -98,3 +99,16 @@ stmnt_timeline <-
 stmnt_timeline %>% 
   ggplot(aes(pub_date, sentiment)) +
   geom_col(show.legend = FALSE)
+
+# Sentiment by author
+stmnt_authors <-
+  dfp_tidy %>% 
+  unnest(authors) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by(authors) %>% 
+  summarise(sentiment = sum(value),
+            post_count = n_distinct(url)
+            ) %T>%
+  glimpse()
+
+
