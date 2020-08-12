@@ -31,6 +31,7 @@ dfp_posts_base <-
 
 dfp_posts <-
   dfp_posts_base %>% 
+  filter(raw_src != "404") %>% 
   mutate(
     title = 
       raw_src %>% 
