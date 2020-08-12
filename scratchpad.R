@@ -54,7 +54,8 @@ dfp_posts <-
             html_node('p') %>% 
             html_nodes('strong') %>% 
             html_text() %>% 
-            str_squish()
+            str_squish() %>% 
+            str_remove_all("[:punct:]")
       ),
     content = 
       raw_src %>% 
