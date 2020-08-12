@@ -16,9 +16,12 @@ dfp_blog <-
   1:30 %>% 
   paste0("https://www.dataforprogress.org/blog?page=", .) %>%
   sapply(safe_read, simplify = F, USE.NAMES = T) %>% 
+  sapply(html_nodes, xpath = '//a[@class="BlogList-item-title"]', simplify = F)
 
 dfp_posts_base <-
   dfp_blog %>%
   flatten() %>% 
   sapply(xml_attr, "href") %>% 
   paste0("https://www.dataforprogress.org", .) %>% 
+  tibble("url" = .) %>% 
+  mutate(raw_src = map(url, read_html))
