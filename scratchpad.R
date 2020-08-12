@@ -46,30 +46,33 @@ dfp_posts <-
                 as_xml_document() %>% 
                 html_node(".Blog-meta-item--date") %>% 
                 html_text()
-      ),
+      ) %>% 
+      lubridate::mdy(),
     authors = 
       raw_src %>% 
       map(~.x %>% 
             as_xml_document() %>% 
             html_node('[data-layout-label="Post Body"]') %>%
             html_node('p') %>% 
-            html_nodes('strong') %>% 
-            html_text() %>% 
-            str_remove_all("[:punct:]") %>% 
-            str_remove_all("$[bB]ys ") %>% 
+            html_text() %>%
+            str_remove_all("^[Bb]y|^Authors:") %>% 
+            str_remove_all("\\([^()]*\\)") %>%
+            str_remove_all("@[:graph:]*") %>% 
+            str_remove_all("^.{62,}$") %>% 
+            str_remove_all("Friends,") %>% 
             str_squish() %>% 
-            str_subset("^.{8,}$")
+            str_split(", | and ")
       ),
     content = 
       raw_src %>% 
       map_chr(~.x %>% 
-            as_xml_document() %>% 
-            html_node('[data-layout-label="Post Body"]') %>%
-            html_nodes('p') %>%
-            tail(-1) %>% 
-            html_text() %>% 
-            str_subset("^.{55,}$") %>% 
-            str_c(collapse = "\n")
+                as_xml_document() %>% 
+                html_node('[data-layout-label="Post Body"]') %>%
+                html_nodes('p') %>%
+                tail(-1) %>% 
+                html_text() %>% 
+                str_subset("^.{55,}$") %>% 
+                str_c(collapse = "\n")
       ),
   ) %>% 
   select(-raw_src) %T>%
@@ -102,13 +105,14 @@ stmnt_timeline %>%
 
 # Sentiment by author
 stmnt_authors <-
-  dfp_tidy %>% 
-  unnest(authors) %>% 
+  dfp_tidy %>%
   inner_join(get_sentiments("afinn")) %>% 
+  unnest(authors) %>%
   group_by(authors) %>% 
   summarise(sentiment = sum(value),
             post_count = n_distinct(url)
-            ) %T>%
+  ) %>% 
+  filter(post_count > 2) %T>%
   glimpse()
 
 
