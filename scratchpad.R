@@ -142,7 +142,7 @@ dfp_tidy %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   wordcloud::comparison.cloud(colors = c("maroon", "forestgreen"),
-                   max.words = 100)
+                   max.words = 200)
   
   
 
