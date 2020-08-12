@@ -63,5 +63,6 @@ dfp_posts <-
             str_subset("^.{55,}$") %>% 
             str_c(collapse = "\n")
       ),
-  ) %T>%
+  ) %>% 
+  select(-raw_src) %T>%
   glimpse()
