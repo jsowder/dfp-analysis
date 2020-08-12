@@ -131,4 +131,16 @@ stmnt_authors %>%
   geom_col(show.legend = FALSE) +
   coord_flip()
 
+stmnt_authors %>% 
+  ggplot(aes(reorder(`Author`, `Sentiment Score`), `Sentiment Score`)) + 
+  library(reshape2)
+
+dfp_tidy %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  wordcloud::comparison.cloud(colors = c("red", "green"),
+                   max.words = 100)
+  
+  
 
