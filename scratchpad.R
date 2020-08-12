@@ -127,9 +127,14 @@ stmnt_authors <-
   rename(Author = authors)
 
 stmnt_authors %>% 
-  ggplot(aes(reorder(`Author`, `Sentiment Score`), `Sentiment Score`)) +
+  ggplot(aes(reorder(`Author`, `Sentiment Score`), `Sentiment Score`, fill = `Sentiment Score`)) +
   geom_col(show.legend = FALSE) +
-  coord_flip()
+  scale_fill_brewer() +
+  coord_flip() + 
+  labs(title = "Sentiment Scores for DFP's Top Bloggers") + 
+  xlab("Sentiment Score") +
+  ylab("Author") + 
+  theme(plot.title = element_text(size=18, face="bold.italic"))
 
 stmnt_authors %>% 
   ggplot(aes(reorder(`Author`, `Sentiment Score`), `Sentiment Score`)) + 
