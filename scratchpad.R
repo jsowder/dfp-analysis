@@ -2,6 +2,7 @@ library(tidyverse)
 library(magrittr)
 library(xml2)
 library(rvest)
+library(tidytext)
 
 safe_read <-
   possibly(
@@ -66,3 +67,7 @@ dfp_posts <-
   ) %>% 
   select(-raw_src) %T>%
   glimpse()
+
+dfp_tidy <-
+  dfp_posts %>% 
+  unnest_tokens(word, content)
