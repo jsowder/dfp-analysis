@@ -81,4 +81,17 @@ wordcloud <-
   count(word, sort = T) %>% 
   with(wordcloud::wordcloud(word, n, max.words = 100))
 
+# Let's get sentimental ----
 
+# Sentiment over time
+stmnt_timeline <-
+  dfp_tidy %>% 
+  mutate(pub_date = lubridate::mdy(pub_date)) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by(pub_date) %>% 
+  summarise(sentiment = sum(value)) %>% 
+  arrange(pub_date)
+
+stmnt_timeline %>% 
+  ggplot(aes(pub_date, sentiment)) +
+  geom_col(show.legend = FALSE)
