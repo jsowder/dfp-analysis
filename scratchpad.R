@@ -59,8 +59,8 @@ dfp_posts <-
             html_node('[data-layout-label="Post Body"]') %>%
             html_nodes('p') %>%
             tail(-1) %>% 
-            html_text()
+            html_text() %>% 
+            str_subset("^.{55,}$")
       ),
   ) %T>%
   glimpse()
-
