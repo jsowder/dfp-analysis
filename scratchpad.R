@@ -126,20 +126,17 @@ stmnt_authors <-
   arrange(desc(`Sentiment Score`)) %>% 
   rename(Author = authors)
 
+# Author Sentiment Bars
 stmnt_authors %>% 
   ggplot(aes(reorder(`Author`, `Sentiment Score`), `Sentiment Score`, fill = `Sentiment Score`)) +
   geom_col(show.legend = FALSE) +
-  scale_fill_brewer() +
   coord_flip() + 
   labs(title = "Sentiment Scores for DFP's Top Bloggers") + 
   xlab("Sentiment Score") +
   ylab("Author") + 
   theme(plot.title = element_text(size=18, face="bold.italic"))
 
-stmnt_authors %>% 
-  ggplot(aes(reorder(`Author`, `Sentiment Score`), `Sentiment Score`)) + 
-  library(reshape2)
-
+# Negative/Positive Comparison Cloud
 dfp_tidy %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
