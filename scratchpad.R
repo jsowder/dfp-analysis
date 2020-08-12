@@ -4,6 +4,7 @@ library(magrittr)
 library(xml2)
 library(rvest)
 library(tidytext)
+library(reshape2)
 
 # Import Data ----
 safe_read <-
@@ -92,15 +93,18 @@ dfp_tidy %>%
 
 # Sentiment over time
 stmnt_timeline <-
-  dfp_tidy %>% 
-  mutate(pub_date = lubridate::mdy(pub_date)) %>% 
+  dfp_tidy %>%
+  filter(lubridate::year(pub_date) > 2018) %>% 
+  mutate(`Publication Date` = 
+           pub_date %>% 
+           lubridate::floor_date(unit = "months")) %>% 
   inner_join(get_sentiments("afinn")) %>% 
-  group_by(pub_date) %>% 
-  summarise(sentiment = sum(value)) %>% 
-  arrange(pub_date)
+  group_by(`Publication Date`) %>% 
+  summarise(`Sentiment Score` = mean(value)) %>% 
+  arrange(`Publication Date`)
 
 stmnt_timeline %>% 
-  ggplot(aes(pub_date, sentiment)) +
+  ggplot(aes(`Publication Date`, `Sentiment Score`)) +
   geom_col(show.legend = FALSE)
 
 # Sentiment by author
@@ -115,11 +119,16 @@ stmnt_authors <-
   filter(authors != "",
          authors != "Tufts University",) %>% 
   group_by(authors) %>% 
-  summarise(sentiment = mean(value),
+  summarise(`Sentiment Score` = mean(value),
             post_count = n_distinct(url)
   ) %>% 
   filter(post_count > 10) %>% 
-  arrange(sentiment) %T>%
-  View()
+  arrange(desc(`Sentiment Score`)) %>% 
+  rename(Author = authors)
+
+stmnt_authors %>% 
+  ggplot(aes(reorder(`Author`, `Sentiment Score`), `Sentiment Score`)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip()
 
 
