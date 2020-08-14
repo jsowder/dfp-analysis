@@ -114,19 +114,30 @@ stmnt_authors <-
   dfp_tidy %>%
   inner_join(get_sentiments("afinn")) %>% 
   unnest(authors) %>%
+dfp_authors <-
+  dfp_posts %>%
   unnest(authors) %>% 
+  unnest(authors) %>% # Not sure why I have to unnest twice
   mutate(authors =
            authors %>% 
+           str_remove_all("and") %>% 
+           str_remove_all("Tufts University") %>% 
+           str_remove_all("[:punct:]") %>% 
            str_squish()) %>% 
   filter(authors != "",
-         authors != "Tufts University",) %>% 
-  group_by(authors) %>% 
-  summarise(`Sentiment Score` = mean(value),
-            post_count = n_distinct(url)
-  ) %>% 
+         authors != "Tufts University") %>% 
+  add_count(authors, name = "post_count")
+
+stmnt_authors <-
+  dfp_authors %>%
   filter(post_count > 10) %>% 
-  arrange(desc(`Sentiment Score`)) %>% 
-  rename(Author = authors)
+  unnest_tokens(word, content) %>% 
+  anti_join(stop_words) %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by(authors) %>% 
+  summarise(`Sentiment Score` = mean(value)) %>% 
+  rename(Author = authors) %T>%
+  glimpse()
 
 # Author Sentiment Bars
 stmnt_authors %>% 
