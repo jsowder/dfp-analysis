@@ -110,10 +110,6 @@ stmnt_timeline %>%
   theme(plot.title = element_text(size=18, face="bold.italic"))
 
 # Sentiment by author
-stmnt_authors <-
-  dfp_tidy %>%
-  inner_join(get_sentiments("afinn")) %>% 
-  unnest(authors) %>%
 dfp_authors <-
   dfp_posts %>%
   unnest(authors) %>% 
