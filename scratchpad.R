@@ -155,7 +155,33 @@ dfp_tidy %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   wordcloud::comparison.cloud(colors = c("maroon", "forestgreen"),
-                   max.words = 200)
-  
-  
+                              max.words = 200)
+
+# Unique Words by Author
+unique_words_by_author <-
+  dfp_authors %>% 
+  filter(post_count > 10) %>% 
+  select(authors, content) %>%
+  unnest_tokens(word, content) %>%
+  mutate(word = word %>% str_remove_all("[:digit:]|'s$")) %>% 
+  anti_join(stop_words) %>%
+  add_count(authors, word, name = "each_word_author") %>% 
+  add_count(authors, name = "total_word_author") %>% 
+  distinct() %>% 
+  bind_tf_idf(word, authors, each_word_author) %>% 
+  group_by(authors) %>% 
+  arrange(desc(tf_idf)) %>% 
+  slice(1:15) %>% 
+  ungroup() %>%
+  mutate(word = factor(word, levels = rev(unique(word))))
+
+unique_words_by_author %>%
+  ggplot(aes(reorder_within(word, tf_idf,authors), tf_idf, fill = authors)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  scale_x_reordered() +
+  facet_wrap(~authors, ncol = 2, scales = "free") +
+  coord_flip()
+
+
 
