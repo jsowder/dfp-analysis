@@ -10,7 +10,7 @@ library(reshape2)
 safe_read <-
   possibly(
     function(url){
-      Sys.sleep(1)
+      Sys.sleep(.1)
       message(paste("Parsing", url))
       read_html(url)
     },
