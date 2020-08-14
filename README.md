@@ -17,3 +17,7 @@ And finally, because you might be wondering "what determines sentiment?", here a
 I hope that you have some questions, and I would be happy to break things down more! I would be new to polling, but I wanted to demonstrate that I can bring some general technical skill instead. I love your work, and would be honored to join your team.
 
 __Thank you for your consideration, and hope you enjoyed!__
+
+Since applying, I got the idea to look at unique words between top bloggers. Below, each author has frequently-used words that are relatively unique amongst other top bloggers on the site. I wonder if any of these show words/topics that really are unique amongst yourselves?
+
+![Unique Words](unique_words.jpeg)
